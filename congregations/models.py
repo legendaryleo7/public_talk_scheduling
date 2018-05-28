@@ -58,6 +58,6 @@ class Congregation(models.Model):
         try:
             return Congregation.objects.get(guid=congregation_guid)
         except ObjectDoesNotExist:
-            url = f'https://apps.jw.org/ui/E/meeting-search.html#/?w={congregation_guid}'
+            url = f'https://apps.jw.org/api/public/meeting-search/weekly-meetings/{congregation_guid}'
             with urllib.request.urlopen(url) as response:
                 print(response.read())
