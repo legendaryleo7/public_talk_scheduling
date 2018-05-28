@@ -1,6 +1,9 @@
 """
 Models
 """
+import urllib.request
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from enumfields import Enum, EnumField
 
@@ -45,4 +48,16 @@ class Congregation(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.city}, {self.state}'
-       
+
+    @staticmethod
+    def get(congregation_guid):
+        """
+        Retrieve the entity from the database, or poll JW.org for info
+        if not found in the db.
+        """
+        try:
+            return Congregation.objects.get(guid=congregation_guid)
+        except ObjectDoesNotExist:
+            url = f'https://apps.jw.org/ui/E/meeting-search.html#/?w={congregation_guid}'
+            with urllib.request.urlopen(url) as response:
+                print(response.read())
